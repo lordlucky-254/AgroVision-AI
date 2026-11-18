@@ -1,1 +1,26 @@
-:root{font-family:Inter,system-ui,sans-serif;color:#17352d;background:#eef5ee}body{margin:0}main{max-width:760px;margin:0 auto;padding:8vh 24px}.eyebrow{letter-spacing:.16em;font-size:.75rem;color:#4c7b52}h1{font-size:clamp(2.2rem,7vw,4.5rem);line-height:.98;margin:12px 0}header p:not(.eyebrow){font-size:1.1rem;max-width:540px}.card{background:white;border:1px solid #d8e5d8;border-radius:20px;padding:24px;display:grid;gap:18px;box-shadow:0 12px 40px #17352d12}label{display:grid;gap:8px;font-weight:700}select,input,button{font:inherit;padding:12px;border-radius:10px;border:1px solid #c7d9c7}button{background:#176b43;color:white;border:0;cursor:pointer;font-weight:700}pre{white-space:pre-wrap;background:#11251e;color:#d7f5df;padding:16px;border-radius:12px;min-height:90px}
+:root {
+  color: #17352d;
+  background: #eef5ee;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body { margin: 0; }
+main { max-width: 760px; margin: 0 auto; padding: 8vh 24px; }
+.eyebrow { color: #4c7b52; font-size: .75rem; letter-spacing: .16em; }
+h1 { font-size: clamp(2.2rem, 7vw, 4.5rem); line-height: .98; margin: 12px 0; }
+header > p:not(.eyebrow) { font-size: 1.1rem; max-width: 540px; }
+.card {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid #d8e5d8;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 12px 40px #17352d12;
+}
+h2 { margin: 0; }
+label { font-weight: 700; }
+select, input, button { font: inherit; padding: 12px; border: 1px solid #c7d9c7; border-radius: 10px; }
+button { border: 0; background: #176b43; color: white; cursor: pointer; font-weight: 700; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #176b43; outline-offset: 2px; }
+#result { min-height: 90px; margin: 0; padding: 16px; border-radius: 12px; background: #11251e; color: #d7f5df; white-space: pre-wrap; }

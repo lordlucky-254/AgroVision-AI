@@ -1,41 +1,34 @@
 # AgroVision AI
 
-Crop disease detection and treatment guidance for smallholder farmers.
-
-## What is included
-
-- FastAPI endpoint for crop image scans and diagnosis history
-- Safe, explainable baseline classifier (file-name and symptom hints)
-- Responsive browser client that works without a database
-- Evaluation/training notes for replacing the baseline with EfficientNet or MobileNet
-- Safety boundary: the app provides likely causes and next steps, not a definitive diagnosis or chemical prescription
+A crop-photo intake and disease-screening prototype for smallholder farmers. The repository currently validates image uploads and presents a safe, explicit **model not configured** result. It does not infer a disease yet; it must not be used to select a treatment.
 
 ## Run locally
 
 ```bash
-cd backend
-python3 -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+uvicorn app.main:app --app-dir backend --reload
 ```
 
-Open `frontend/index.html` in a browser. The API is available at `http://127.0.0.1:8000`.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The API and browser client are served from the same origin.
 
 ## API
 
-- `GET /health`
-- `POST /api/v1/diagnoses` with multipart field `image` and optional `crop`
-- `GET /api/v1/diagnoses`
+- `GET /health` — service health
+- `POST /api/v1/diagnoses` — multipart fields `image` (JPEG, PNG, or WebP; maximum 10 MB) and optional `crop`
+- `GET /api/v1/diagnoses` — recent in-memory submissions (up to 100; cleared when the process restarts)
 
-The current model is intentionally a transparent baseline. Add field photographs, a held-out test set, calibration, and agronomist-reviewed guidance before production use.
+The current result intentionally has no confidence score and makes no disease claim. Uploads are not retained, but do not submit sensitive images.
 
-## Roadmap
+## Development
 
-1. Add PlantVillage for initial transfer learning and PlantDoc/locally collected field images for validation.
-2. Train a crop-specific MobileNet/EfficientNet model with confidence calibration and an `unknown` class.
-3. Store scans in PostgreSQL and add user/farm history.
-4. Localize explanations into Kiswahili and add an offline mobile model.
+```bash
+python -m pytest -q
+```
+
+Before adding an image model, create a field-representative, permissioned dataset, keep an independent field-image test set, report per-class precision/recall and calibration, and include an abstain/unknown outcome. All crop-protection guidance must be reviewed by qualified local agricultural experts; do not generate pesticide products or dosages from model predictions.
 
 ## License
 
-MIT. Dataset licenses remain the responsibility of the dataset user.
+MIT. Dataset and pretrained-model licenses remain the responsibility of their users.
