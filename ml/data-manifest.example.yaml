@@ -1,0 +1,19 @@
+dataset_name: replace-with-dataset-name
+dataset_version: replace-with-version-or-commit
+source_url: https://example.invalid/dataset
+license: verify-before-use
+attribution: required
+retrieved_on: YYYY-MM-DD
+geography: specify-country-or-region
+labeling:
+  method: expert-reviewed-or-source-labels
+  reviewer_qualification: describe
+  known_limitations: describe
+partitions:
+  grouping_unit: plant-farm-or-capture-session
+  train: data/train
+  validation: data/validation
+  test: data/test
+personal_data:
+  contains_people_or_gps: false
+  consent_record: describe-or-not-applicable

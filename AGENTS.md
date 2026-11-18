@@ -1,7 +1,9 @@
 # Instructions for coding agents
 
-- Keep the API honest: no disease prediction or confidence score until a validated image model is actually loaded.
-- Treat crop-health output as decision support, not a diagnosis. Never recommend pesticide products or dosages without verified local expert guidance.
-- Validate uploads and avoid retaining image data or secrets by default.
+- Treat crop-health output as a screening aid, not a diagnosis. Never recommend pesticide products or dosages from model predictions.
+- Explain that training-set performance does not imply field performance; do not make accuracy or safety claims without reproducible independent field evaluation.
+- Do not call an uncalibrated softmax score "confidence" or a probability.
+- Validate image content and size; never persist uploaded image bytes.
 - Run `python -m pytest -q` from the repository root after backend changes.
-- Keep model datasets and weights out of Git unless their licenses and size have been verified.
+- Keep datasets and model weights out of Git unless licenses, attribution, and size have been reviewed.
+- Preserve the separation between training data, validation data, and an independent field test set.

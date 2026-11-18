@@ -1,14 +1,25 @@
+from io import BytesIO
+
+from PIL import Image
 from fastapi.testclient import TestClient
 
-from backend.app.main import app, health
+from backend.app.main import app
 from backend.app.service import diagnose_crop
 
 client = TestClient(app)
-PNG_HEADER = b"\x89PNG\r\n\x1a\n"
+
+
+def png_image() -> bytes:
+    output = BytesIO()
+    Image.new("RGB", (16, 16), color="green").save(output, format="PNG")
+    return output.getvalue()
 
 
 def test_health() -> None:
-    assert health()["status"] == "ok"
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "ok"
+    assert response.json()["model_ready"] is False
 
 
 def test_root_serves_frontend() -> None:
@@ -18,10 +29,47 @@ def test_root_serves_frontend() -> None:
 
 
 def test_diagnosis_does_not_claim_model_prediction() -> None:
-    body = diagnose_crop("tomato", PNG_HEADER)
+    body = diagnose_crop("tomato", None)
     assert body["diagnosis"] == "Image classifier not configured"
-    assert body["confidence"] is None
     assert body["needs_expert_confirmation"] is True
+    assert body["candidates"] == []
+
+
+def test_diagnosis_marks_uncalibrated_scores_and_abstains_below_threshold() -> None:
+    body = diagnose_crop(
+        "tomato",
+        [{"label": "Tomato___healthy", "score": 0.5}],
+        model_version="test-model",
+    )
+    assert body["diagnosis"] == "Uncertain result"
+    assert body["model_score"] == 0.5
+    assert body["score_note"] == "Scores are uncalibrated model outputs, not probabilities."
+    assert body["model"] == "test-model"
+
+
+def test_diagnosis_does_not_show_a_different_crop_as_a_match() -> None:
+    body = diagnose_crop(
+        "tomato",
+        [{"label": "Potato leaf early blight", "score": 0.99}],
+        model_version="test-model",
+    )
+    assert body["diagnosis"] == "Unable to screen this crop"
+    assert body["candidates"] == []
+    assert body["model_score"] is None
+
+
+def test_diagnosis_returns_matching_crop_suggestion_above_threshold() -> None:
+    body = diagnose_crop(
+        "tomato",
+        [
+            {"label": "Tomato___healthy", "score": 0.8},
+            {"label": "Tomato___leaf_spot", "score": 0.2},
+        ],
+        model_version="test-model",
+    )
+    assert body["diagnosis"] == "Tomato___healthy"
+    assert body["needs_expert_confirmation"] is True
+    assert body["model_score"] == 0.8
 
 
 def test_upload_requires_supported_image_type() -> None:
@@ -40,12 +88,24 @@ def test_upload_rejects_non_image_content() -> None:
     assert response.status_code == 415
 
 
-def test_upload_accepts_png_and_records_cautious_result() -> None:
+def test_model_status_explains_missing_checkpoint() -> None:
+    response = client.get("/api/v1/model")
+    assert response.status_code == 200
+    assert response.json()["ready"] is False
+
+
+def test_valid_upload_returns_clear_unavailable_status_without_model() -> None:
     response = client.post(
         "/api/v1/diagnoses",
         data={"crop": "tomato"},
-        files={"image": ("leaf.png", PNG_HEADER, "image/png")},
+        files={"image": ("leaf.png", png_image(), "image/png")},
     )
-    assert response.status_code == 200
-    assert response.json()["confidence"] is None
-    assert response.json()["needs_expert_confirmation"] is True
+    assert response.status_code == 503
+
+
+def test_oversized_image_is_rejected() -> None:
+    response = client.post(
+        "/api/v1/diagnoses",
+        files={"image": ("leaf.png", b"x" * (10 * 1024 * 1024 + 1), "image/png")},
+    )
+    assert response.status_code == 413

@@ -22,5 +22,15 @@ h2 { margin: 0; }
 label { font-weight: 700; }
 select, input, button { font: inherit; padding: 12px; border: 1px solid #c7d9c7; border-radius: 10px; }
 button { border: 0; background: #176b43; color: white; cursor: pointer; font-weight: 700; }
+button:disabled { cursor: wait; opacity: .65; }
 button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #176b43; outline-offset: 2px; }
 #result { min-height: 90px; margin: 0; padding: 16px; border-radius: 12px; background: #11251e; color: #d7f5df; white-space: pre-wrap; }
+.notice { padding: 12px 16px; border-left: 4px solid #b67919; background: #fff6df; }
+.notice.ready { border-color: #176b43; background: #e4f2e7; }
+.history { margin-top: 32px; }
+.history-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.secondary { padding: 8px 12px; border: 1px solid #c7d9c7; background: transparent; color: #17352d; }
+.muted { color: #52665c; font-size: .9rem; }
+#history-list { display: grid; gap: 8px; padding: 0; list-style: none; }
+#history-list li { display: grid; gap: 4px; padding: 12px 16px; border: 1px solid #d8e5d8; border-radius: 10px; background: white; }
+#history-list span { color: #52665c; font-size: .9rem; }

@@ -12,8 +12,9 @@
       <header>
         <p class="eyebrow">AGROVISION AI</p>
         <h1>A calmer first step when a crop looks wrong.</h1>
-        <p>Upload a leaf photo for a transparent screening result. This prototype does not replace an agronomist.</p>
+        <p>Screen a leaf photo with a locally hosted model. This tool is not a diagnosis and does not replace an agronomist.</p>
       </header>
+      <p id="model-status" class="notice" role="status" aria-live="polite">Checking model availability…</p>
       <section class="card" aria-labelledby="scan-heading">
         <h2 id="scan-heading">Screen a crop photo</h2>
         <label for="crop">Crop</label>
@@ -21,12 +22,21 @@
           <option value="tomato">Tomato</option>
           <option value="maize">Maize</option>
           <option value="potato">Potato</option>
+          <option value="pepper">Pepper</option>
           <option value="unknown">Other / not sure</option>
         </select>
         <label for="image">Leaf photo (JPEG, PNG, or WebP; up to 10 MB)</label>
         <input id="image" type="file" accept="image/jpeg,image/png,image/webp">
         <button id="scan" type="button">Screen crop</button>
-        <p id="result" role="status" aria-live="polite">Your result will appear here.</p>
+        <div id="result" role="status" aria-live="polite">Your result will appear here.</div>
+      </section>
+      <section class="history" aria-labelledby="history-heading">
+        <div class="history-heading">
+          <h2 id="history-heading">Recent scans on this device</h2>
+          <button id="clear-history" class="secondary" type="button">Clear history</button>
+        </div>
+        <p class="muted">Only scan summaries are stored in this browser; photos are never saved.</p>
+        <ul id="history-list"></ul>
       </section>
     </main>
     <script src="app.js"></script>

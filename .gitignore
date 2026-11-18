@@ -1,7 +1,8 @@
 .venv/
+.venv-ml/
 __pycache__/
 .pytest_cache/
 *.py[cod]
 .env
-models/*.onnx
-models/*.tflite
+data/
+models/*
